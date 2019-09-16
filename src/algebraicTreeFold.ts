@@ -1,3 +1,5 @@
+type Tree<T> = Leaf<T> | Branch<T> | DatumBranch<T>;
+
 type Leaf<T> = {
   kind: 'leaf';
   value: T;
@@ -29,8 +31,6 @@ const DatumBranch = <T>(value: T, ...children: Array<Tree<T>>): DatumBranch<T> =
   value,
   children
 });
-
-type Tree<T> = Leaf<T> | Branch<T> | DatumBranch<T>;
 
 const treeMatch = <T, R>(
   onLeaf       : (_: Leaf<T>)        => R,
