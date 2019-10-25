@@ -9,12 +9,12 @@ type None = {
   kind: 'none';
 };
 
-const Some = <T>(val: T): Some<T> => ({
+export const Some = <T>(val: T): Some<T> => ({
   kind: 'some',
   val
 });
 
-const None = (): None => ({
+export const None = (): None => ({
   kind: 'none'
 });
 
@@ -36,35 +36,42 @@ const maybeFold = <T, R>(
   }
 };
 
-const Maybe = Object.assign(
-  <T>(val: T | void | Maybe<T>) => ({
-    map: <R>(mapping: (v: T) => R | void): Maybe<R> => {
-      return maybeFold<T, Maybe<R>>(
-        None,
-        (v: T) => Maybe.of(mapping(v))
-      )(Maybe.of(val));
-    },
-    fold: <R>(
-      onNone: () => R,
-      onSome: (_: T) => R
-    ): R => maybeFold(
-      onNone, onSome
-    )(Maybe.of(val))
-  }),
-  {
-    of: <T>(val: T | void | Maybe<T>) => {
-      if (isMaybe(val)) return val;
-      if (val === null || val === undefined) return None();
-      return Some(val);
-    },
-    map: <T, R>(mapping: (v: T) => R | void) => (mb: Maybe<T>): Maybe<R> => {
-      return maybeFold<T, Maybe<R>>(
-        None,
-        (v: T) => Maybe.of(mapping(v))
-      )(mb);
-    },
-    fold: maybeFold
-  }
-);
+const maybePipe = <T0, T1, T2, T3>(
+  f0: (_: T0) => Maybe<T1>,
+  f1: (_: T1) => Maybe<T2>,
+  f2: (_: T2) => Maybe<T3>
+) => (mb: Maybe<T0>) => {
+  return Maybe.flatMap(f2)(
+          Maybe.flatMap(f1)(
+           Maybe.flatMap(f0)(mb)));
+};
+
+const Maybe = {
+  of: <T>(val: T | void | Maybe<T>) => {
+    if (isMaybe(val))
+      return val;
+
+    if (val === null || val === undefined || Number.isNaN(val as unknown as number))
+      return None();
+
+    return Some(val as T);
+  },
+  map: <T, R>(mapping: (v: T) => R | void) => (mb: Maybe<T>): Maybe<R> => {
+    return maybeFold<T, Maybe<R>>(
+      None,
+      (v: T) => Maybe.of(mapping(v))
+    )(mb);
+  },
+  flatMap: <T, R>(mapping: (v: T) => Maybe<R>) => (mb: Maybe<T>): Maybe<R> => {
+    return maybeFold<T, Maybe<R>>(
+      None,
+      (v: T) => mapping(v)
+    )(mb);
+  },
+  fold: maybeFold,
+  pipe: maybePipe
+};
 
 export default Maybe;
+
+

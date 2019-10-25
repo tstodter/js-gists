@@ -18,28 +18,17 @@ export const match = <U extends UnionType, RetT>(
   fObj[unionVal.kind as U['kind']](unionVal as any)
 );
 
-type A = {
-  kind: 'a';
-  one: number;
-  two: string;
-};
+export const matcher =
+  <U extends UnionType>() =>
+    <RetT>(fObj: UnionMatchObj<U, RetT>) => (
+      match<U, RetT>(fObj)
+    );
 
-type B = {
-  kind: 'b';
-  bee: number;
-};
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
-type C = {
-  kind: 'c';
-  cee: number;
-  dee: A;
-};
-
-type Union = A | B | C;
-
-const matchU = match<Union, number>({
-  a: ({one, two}) => 1,
-  b: ({bee}) => 2,
-  c: ({cee, dee}) => dee.one
-});//({kind: 'c', cee: 3, dee: {kind: 'a', one: 1234, two: 'fdsa'}});
+export const makeFactory = <T extends UnionType>(kind: T['kind']) =>
+  (init: PartialBy<T, 'kind'>): T => ({
+    ...init,
+    kind
+  } as T);
 
