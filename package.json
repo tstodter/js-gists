@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel ./src/index.html",
+    "start-watch": "tsc --watch",
     "test": "echo \"Error: no tests installed\" && exit 1",
     "build": "tsc",
     "prestart": "npm run build"

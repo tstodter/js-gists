@@ -1,0 +1,17 @@
+circle {
+    fill: cornflowerblue;
+}
+
+.voronoi {
+    /* fill: none; */
+    stroke: grey;
+    stroke-width: 0.5px;
+    pointer-events: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    padding: 3em 1em;
+    font-family: sans-serif;
+}

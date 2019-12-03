@@ -1,3 +1,7 @@
+import { matcher } from "./sumUtilities";
+
+// import { match, matcher } from "./sumUtilities";
+
 type Maybe<T> = Some<T> | None;
 
 type Some<T> = {
@@ -19,8 +23,11 @@ export const None = (): None => ({
 });
 
 const isMaybe = <T>(maybeMaybe: void | T | Maybe<T>): maybeMaybe is Maybe<T> => (
-  !!maybeMaybe && 'kind' in maybeMaybe && (
-    maybeMaybe.kind === 'some' || maybeMaybe.kind === 'none'
+  !!maybeMaybe &&
+  maybeMaybe instanceof Object &&
+  'kind' in maybeMaybe && (
+    maybeMaybe.kind === 'some' ||
+    maybeMaybe.kind === 'none'
   )
 );
 
@@ -74,4 +81,17 @@ const Maybe = {
 
 export default Maybe;
 
+// const maybeMatch = matcher<Maybe<number>>();
 
+const maybeMatch = matcher<Maybe<number>>();
+
+const defaultNeg1 = maybeMatch({
+  some: ({val}) => val,
+  none: () => -1
+});
+
+defaultNeg1(Maybe.of())
+
+const abc = Maybe.of(4)
+abc
+ 

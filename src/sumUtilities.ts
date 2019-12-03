@@ -31,4 +31,3 @@ export const makeFactory = <T extends UnionType>(kind: T['kind']) =>
     ...init,
     kind
   } as T);
-

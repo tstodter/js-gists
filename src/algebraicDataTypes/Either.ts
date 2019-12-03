@@ -25,10 +25,12 @@ const Either = {
   ofRight: Right,
   fold: <L, T>(onLeft: (_: L) => T) =>
           <R>(onRight: (_: R) => T) =>
+
             match<Either<L, R>, T>({
               left: ({left}) => onLeft(left),
               right: ({right}) => onRight(right)
             }),
+
   map: <R, T>(f: (right: R) => T) =>
         <L>(eitherObj: Either<L, R>) =>
           match<Either<L, R>, Either<L, T>>({
